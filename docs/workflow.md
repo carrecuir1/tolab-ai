@@ -80,3 +80,19 @@ desloppify status --json
 > **Two architecture reviewers**
 > `/improve-codebase-architecture` = pick ONE deep change and get grilled on it.
 > Desloppify = grind through many small issues. Don't run both in the same session.
+
+## Daily health pass (GitHub Action, optional)
+The health pass above, run unattended every day on GitHub. It opens a PR to the default branch with one commit per fix and never pushes to it. You review and merge.
+
+1 - Copy [`templates/github/daily-improve.yml`](../templates/github/daily-improve.yml) to `<project>/.github/workflows/daily-improve.yml` and keep the toolchain step your stack needs.
+
+2 - In the project's GitHub settings:
+- Secret `ANTHROPIC_API_KEY` (or `CLAUDE_CODE_OAUTH_TOKEN` from `claude setup-token`)
+- Actions → General → **Allow GitHub Actions to create and approve pull requests**
+
+3 - Try it once from the Actions tab (**Run workflow**) before trusting the schedule.
+
+The logic lives in [`.github/actions/daily-improve`](../.github/actions/daily-improve/action.yml), so improving the prompt here updates every project on its next run.
+
+> [!NOTE]
+> PRs opened with `GITHUB_TOKEN` don't trigger the project's other workflows (GitHub's rule). The agent runs the tests itself before each commit; to get CI on the PR too, close and reopen it, or use a GitHub App token.
