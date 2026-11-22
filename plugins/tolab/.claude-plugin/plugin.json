@@ -1,0 +1,6 @@
+{
+  "name": "tolab",
+  "version": "0.1.0",
+  "description": "Generic coding skills and commands for AI agents. Third-party skills are installed from their own sources.",
+  "author": { "name": "Thomas Labbe" }
+}

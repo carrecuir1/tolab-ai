@@ -1,0 +1,12 @@
+# Secrets
+.env
+*.local.json
+
+# Tool state
+.desloppify/
+
+# OS / editors
+Thumbs.db
+.DS_Store
+.obsidian/
+.vscode/
