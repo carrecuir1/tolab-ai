@@ -27,7 +27,7 @@ Details: [overview](docs/overview.md) · [workflow](docs/workflow.md) · [cheat 
 
 ## Setup
 
-Requirements: Windows + PowerShell, git, Node.js LTS, Python 3.11+.
+Requirements: Windows + PowerShell, git, GitHub CLI (`gh`), Node.js LTS, Python 3.11+.
 
 ```powershell
 .\install.ps1                                         # once per machine

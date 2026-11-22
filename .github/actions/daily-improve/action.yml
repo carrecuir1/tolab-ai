@@ -59,6 +59,7 @@ runs:
           3. After each fix, run the feedback loops from CLAUDE.md (tests, lint, format). If they fail and you can't fix it, revert that fix with `git restore .` and move on.
           4. Commit each fix on its own: `git add -A && git commit -m "<what and why>"`. Never commit `.desloppify/`, `.env` or secrets.
           5. Terms in GLOSSARY.md are canonical: never rename them. ADRs are settled: don't change them. Don't game the score with cosmetic changes.
+          5b. Only two-way-door fixes (see `## One-way doors` in CLAUDE.md, if present). If a fix would be a one-way door, don't make it: list it in the PR body under skipped.
           6. If the repo has Pocock's `code-review` skill, run it on your commits before finishing and fix what it finds (as its own commit).
           7. Write the PR description to `${{ runner.temp }}/pr-body.md`: one section per commit (what, why, risk), then the score before → after from `desloppify status --json`, then anything you skipped and why. If the repo has Pocock's `pr` skill, follow its format.
 

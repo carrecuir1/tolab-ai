@@ -25,7 +25,7 @@ Can't decide by talking → `/prototype` (throwaway branch, never merged).
 /to-spec
 /to-tickets
 ```
-Read the tickets. Fix the HITL / AFK tags before building.
+Read the tickets. Fix the HITL / AFK tags before building. Any ticket with a one-way door (can't be undone by a revert: data loss, sending, publishing, see `## One-way doors` in CLAUDE.md) is HITL.
 
 5 - Build
 ```
@@ -87,7 +87,7 @@ The health pass above, run unattended every day on GitHub. It opens a PR to the 
 1 - Copy [`templates/github/daily-improve.yml`](../templates/github/daily-improve.yml) to `<project>/.github/workflows/daily-improve.yml` and keep the toolchain step your stack needs.
 
 2 - In the project's GitHub settings:
-- Secret `ANTHROPIC_API_KEY` (or `CLAUDE_CODE_OAUTH_TOKEN` from `claude setup-token`)
+- Secret `CLAUDE_CODE_OAUTH_TOKEN`: run `claude setup-token` locally (uses your Claude Pro/Max subscription, no API key needed) and paste the token. Runs count against your subscription limits. `ANTHROPIC_API_KEY` works instead if you use the API.
 - Actions → General → **Allow GitHub Actions to create and approve pull requests**
 
 3 - Try it once from the Actions tab (**Run workflow**) before trusting the schedule.

@@ -1,6 +1,7 @@
 # Copy to <project>/.github/workflows/daily-improve.yml
 # Every day: an AI code-health pass (Desloppify + Pocock skills) that opens a PR. It never pushes to the default branch.
-# Needs: secret ANTHROPIC_API_KEY (or CLAUDE_CODE_OAUTH_TOKEN), and
+# Needs: secret CLAUDE_CODE_OAUTH_TOKEN (run `claude setup-token` on a machine logged in to your Claude subscription;
+# or ANTHROPIC_API_KEY if you use the API), and
 # Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests".
 name: Daily code health
 
@@ -34,7 +35,7 @@ jobs:
 
       - uses: carrecuir1/tolab-ai/.github/actions/daily-improve@main
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
-          # claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}   # instead, if you pay per use via the API
           github_token: ${{ secrets.GITHUB_TOKEN }}
           max_fixes: '5'
