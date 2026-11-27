@@ -1,6 +1,7 @@
 # Global instructions
 
 Applies to every repo. Repo-specific commands and rules live in each repo's own `CLAUDE.md`.
+Source: `tolab-ai/claude/CLAUDE.md` (`~/.claude/CLAUDE.md` is a symlink to it; edit the source).
 
 ## Working
 - Plan in files, not in chat. Specs, tickets, `GLOSSARY.md` and ADRs live in the repo.
@@ -23,4 +24,6 @@ A one-way door is a change a `git revert` can't undo: deleting or rewriting data
 
 ## Git
 - You may push branches and open PRs. Never force-push, `reset --hard`, delete branches or merge into `main`. I do that.
+- Before each commit, run `git status -sb`. Commit only on a branch made for this change; otherwise branch from `origin/main`.
+- After every push, run `gh pr checks <n> --watch` and fix a red run before reporting done.
 - Never commit secrets, `.env` files or `.desloppify/`.

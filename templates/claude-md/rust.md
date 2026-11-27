@@ -9,10 +9,6 @@ Run these before every commit. All must pass. These replace any npm commands in 
 - Tickets that need real hardware (flashing, a board, a scope) are HITL. Never mark them AFK.
 - Keep logic host-testable: put hardware behind traits so /tdd can run with `cargo test`.
 
-## Domain language
-- Terms in GLOSSARY.md are canonical. Never rename them, even during a desloppify pass.
-- Decisions in the ADR folder are settled. Propose a new ADR instead of silently changing one.
-
 ## Code health
 Two levels. Pocock's skills decide how code is written; desloppify checks the result.
 - Gate, every ticket (inside `/implement`, after the feedback loops pass, before the commit):
@@ -21,14 +17,5 @@ Two levels. Pocock's skills decide how code is written; desloppify checks the re
   3. Fix only issues in code this ticket touched. Everything else waits for the health pass.
 - Health pass (full scan with subjective review): only on a `desloppify/*` branch, in its own session, never mid-feature. Target strict score: 95.
 - Never game the score with cosmetic changes.
+- Never rename GLOSSARY.md terms during a desloppify pass.
 - `.desloppify/` is local state, never commit it.
-
-## One-way doors
-A one-way door is a change a `git revert` can't undo: deleting or rewriting data (destructive migrations, deleting files, records or branches), sending anything (emails, messages, notifications, webhooks), moving money, publishing (releases, public API or file-format changes others depend on), flashing hardware, rotating or revoking secrets. Everything else is a two-way door: reverting fixes it.
-- Call it early. While grilling and in `/to-tickets`, mark every ticket that contains a one-way door as HITL (`ready-for-human`), never AFK.
-- Make it two-way when you can: expand–contract migrations, a feature flag, a backup or dry run before the destructive step.
-- Never walk through a one-way door yourself (send, delete real data, publish, migrate production). Stop and ask.
-- Every PR states its door in `/pr`'s **Merge Danger** section. A one-way-door PR starts its title with `[one-way]` and only a human merges it.
-
-## Git
-- Never push, force, reset --hard or delete branches. I do that.
