@@ -15,6 +15,7 @@ function Step($msg) { Write-Host "`n== $msg" -ForegroundColor Cyan }
 Step 'Checking requirements'
 if (-not (Test-Cmd git))  { throw 'git not found. Install Git for Windows.' }
 if (-not (Test-Cmd node)) { throw 'node not found. Install Node.js LTS.' }
+if (-not (Test-Cmd gh))   { throw 'gh not found. Install GitHub CLI (winget install GitHub.cli), then run gh auth login.' }
 $Py = if (Test-Cmd py) { 'py' } elseif (Test-Cmd python) { 'python' } else { throw 'Python not found. Install Python 3.11+.' }
 if ((& $Py -c 'import sys; print(sys.version_info >= (3, 11))') -ne 'True') { throw 'Python 3.11+ required.' }
 

@@ -11,7 +11,7 @@
 The manual steps stay here for reference.
 
 ## Machine (once)
-Requirements: Node.js LTS, Python 3.11+, git.
+Requirements: Node.js LTS, Python 3.11+, git, [GitHub CLI](https://cli.github.com) (`gh`, logged in with `gh auth login`).
 
 1 - Install Claude Code ([docs](https://docs.claude.com/en/docs/claude-code/overview))
 ```powershell
@@ -66,7 +66,7 @@ claude
 /setup-matt-pocock-skills
 /git-guardrails-claude-code
 ```
-Setup asks: issue tracker (use **local markdown** for personal repos), triage labels, where docs go.
+Setup asks: issue tracker (pick **GitHub**: tickets, specs and bugs become GitHub issues, created with `gh`), triage labels (keep the defaults), where docs go. The repo needs a GitHub remote first (`git remote -v`).
 
 6 - Paste the matching block from [CLAUDE.md templates](../templates/claude-md/) into the repo's `CLAUDE.md` and check the commands
 

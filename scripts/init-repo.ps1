@@ -42,7 +42,7 @@ try {
 
 Next:
   1. claude
-  2. /setup-matt-pocock-skills   (issue tracker: local markdown for personal repos)
+  2. /setup-matt-pocock-skills   (issue tracker: GitHub, keep the default triage labels)
   3. /git-guardrails-claude-code
   4. Check the commands in CLAUDE.md match this repo
   5. desloppify exclude <build-dir>   then   desloppify scan --path .

@@ -1,0 +1,83 @@
+name: tolab daily improve
+description: Daily AI code-health pass with Desloppify and Pocock's skills. Commits fixes on a desloppify/* branch and opens a PR to the default branch. Never pushes to the default branch.
+
+inputs:
+  anthropic_api_key:
+    description: Anthropic API key. Set this or claude_code_oauth_token.
+    default: ''
+  claude_code_oauth_token:
+    description: Claude Code OAuth token (from `claude setup-token`). Set this or anthropic_api_key.
+    default: ''
+  github_token:
+    description: Token used to push the fix branch and open the PR.
+    required: true
+  max_fixes:
+    description: Most issues fixed per run, so the PR stays reviewable.
+    default: '5'
+  target_score:
+    description: Stop early once the Desloppify strict score reaches this.
+    default: '95'
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Install Desloppify
+      shell: bash
+      run: pip install --upgrade 'desloppify[full]'
+
+    - name: Create fix branch
+      id: branch
+      shell: bash
+      run: |
+        name="desloppify/daily-$(date -u +%F)-${GITHUB_RUN_ID}"
+        git config user.name 'github-actions[bot]'
+        git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+        echo "start=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+        git checkout -b "$name"
+        echo "name=$name" >> "$GITHUB_OUTPUT"
+
+    - name: Run Claude
+      uses: anthropics/claude-code-action@v1
+      with:
+        anthropic_api_key: ${{ inputs.anthropic_api_key }}
+        claude_code_oauth_token: ${{ inputs.claude_code_oauth_token }}
+        github_token: ${{ inputs.github_token }}
+        claude_args: >-
+          --max-turns 120
+          --allowedTools "Bash,Read,Edit,Write,Glob,Grep"
+          --disallowedTools "Bash(git push:*),Bash(git checkout:*),Bash(git switch:*),Bash(git reset:*),Bash(git rebase:*)"
+        prompt: |
+          You are running unattended as a daily code-health pass on branch `${{ steps.branch.outputs.name }}`.
+          Read CLAUDE.md first. Its rules win over anything here.
+
+          1. Run `desloppify scan --path .`, then loop: `desloppify next` → fix it properly → resolve → `desloppify next`.
+          2. Fix at most ${{ inputs.max_fixes }} issues. Stop earlier at strict score ${{ inputs.target_score }}, or when only items needing a human decision are left. Skip those.
+          3. After each fix, run the feedback loops from CLAUDE.md (tests, lint, format). If they fail and you can't fix it, revert that fix with `git restore .` and move on.
+          4. Commit each fix on its own: `git add -A && git commit -m "<what and why>"`. Never commit `.desloppify/`, `.env` or secrets.
+          5. Terms in GLOSSARY.md are canonical: never rename them. ADRs are settled: don't change them. Don't game the score with cosmetic changes.
+          5b. Only two-way-door fixes (see `## One-way doors` in CLAUDE.md, if present). If a fix would be a one-way door, don't make it: list it in the PR body under skipped.
+          6. If the repo has Pocock's `code-review` skill, run it on your commits before finishing and fix what it finds (as its own commit).
+          7. Write the PR description to `${{ runner.temp }}/pr-body.md`: one section per commit (what, why, risk), then the score before → after from `desloppify status --json`, then anything you skipped and why. If the repo has Pocock's `pr` skill, follow its format.
+
+          Never push, never switch branches, never touch the default branch. The workflow opens the PR after you finish.
+
+    - name: Open PR
+      shell: bash
+      env:
+        GH_TOKEN: ${{ inputs.github_token }}
+        BRANCH: ${{ steps.branch.outputs.name }}
+        START: ${{ steps.branch.outputs.start }}
+        BASE: ${{ github.event.repository.default_branch }}
+        BODY: ${{ runner.temp }}/pr-body.md
+      run: |
+        if [ "$(git rev-list --count "$START..HEAD")" = 0 ]; then
+          echo 'No fixes committed today, no PR.'
+          exit 0
+        fi
+        [ -s "$BODY" ] || git log --format='- %s' "$START..HEAD" > "$BODY"
+        git push origin "$BRANCH"
+        gh pr create --base "$BASE" --head "$BRANCH" --title "Daily code health $(date -u +%F)" --body-file "$BODY"

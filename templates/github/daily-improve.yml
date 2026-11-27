@@ -1,0 +1,41 @@
+# Copy to <project>/.github/workflows/daily-improve.yml
+# Every day: an AI code-health pass (Desloppify + Pocock skills) that opens a PR. It never pushes to the default branch.
+# Needs: secret CLAUDE_CODE_OAUTH_TOKEN (run `claude setup-token` on a machine logged in to your Claude subscription;
+# or ANTHROPIC_API_KEY if you use the API), and
+# Settings → Actions → General → "Allow GitHub Actions to create and approve pull requests".
+name: Daily code health
+
+on:
+  schedule:
+    - cron: '0 0 * * *'   # 00:00 UTC; shift the hour for your time zone
+  workflow_dispatch:       # run it by hand from the Actions tab
+
+permissions:
+  contents: write
+  pull-requests: write
+  id-token: write
+
+concurrency:
+  group: daily-improve
+  cancel-in-progress: false
+
+jobs:
+  improve:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      # Set up this repo's toolchain so the agent can run the feedback loops in CLAUDE.md. Keep the one you need:
+      # - uses: dtolnay/rust-toolchain@stable            # rust, godot-gdext
+      #   with: { components: 'clippy, rustfmt' }
+      # - uses: actions/setup-node@v4                    # typescript
+      #   with: { node-version: lts/*, cache: npm }
+      # - run: npm ci
+
+      - uses: carrecuir1/tolab-ai/.github/actions/daily-improve@main
+        with:
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN }}
+          # anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}   # instead, if you pay per use via the API
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          max_fixes: '5'

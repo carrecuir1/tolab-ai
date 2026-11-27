@@ -12,6 +12,7 @@ A reproducible setup for coding with an AI agent (Claude Code): a process for ev
 | [Ponytail](https://github.com/DietrichGebert/ponytail) | Always-on "laziest senior dev" mindset that keeps the agent from over-building | `install.ps1` (plugin) |
 | **tolab skills** | Generic skills: `/quiz-me` quizzes you on code the agent wrote | `install.ps1` (plugin served from this repo) |
 | **CLAUDE.md** | Global rules (`claude/`) + per-stack blocks with test/lint commands and the Desloppify gate (`templates/`) | `install.ps1` + `init-repo.ps1` |
+| **Daily health PR** | GitHub Action for your project repos: every day, Claude runs a Desloppify pass and opens a PR (never pushes to main) | Copy `templates/github/daily-improve.yml`, see [workflow](docs/workflow.md#daily-health-pass-github-action-optional) |
 
 Third-party tools are never copied in, only referenced with their source: [third-party/](third-party/README.md).
 
@@ -26,7 +27,7 @@ Details: [overview](docs/overview.md) · [workflow](docs/workflow.md) · [cheat 
 
 ## Setup
 
-Requirements: Windows + PowerShell, git, Node.js LTS, Python 3.11+.
+Requirements: Windows + PowerShell, git, GitHub CLI (`gh`), Node.js LTS, Python 3.11+.
 
 ```powershell
 .\install.ps1                                         # once per machine
@@ -39,7 +40,8 @@ Then in the project: `claude`, then `/setup-matt-pocock-skills`.
 
 ```
 docs/               how the workflow goes
-templates/          per-stack CLAUDE.md blocks
+templates/          per-stack CLAUDE.md blocks + the daily-PR workflow
+.github/actions/    the daily health-pass action project repos call
 claude/CLAUDE.md    global agent instructions
 plugins/tolab/      generic skills and commands
 third-party/        what's used from other people, and where it comes from
