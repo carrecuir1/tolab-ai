@@ -8,6 +8,7 @@ Applies to every repo. Repo-specific commands and rules live in each repo's own 
 - Thin vertical slices. Every change is testable and reviewable alone.
 - Run the repo's feedback loops (test, lint, format) before every commit. All must pass.
 - If context gets long, suggest `/handoff` to a fresh session instead of pushing on.
+- A pasted handoff summary has a full version in the OS temp folder (`*handoff*.md`). Read it before acting on the summary.
 - User-invoked skills (`/to-spec`, `/to-tickets`, `/handoff`, `/wayfinder`, `/retro`) exist but only Thomas can start them. When one fits, tell him which to type.
 
 ## Domain language
